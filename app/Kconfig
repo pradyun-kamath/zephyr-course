@@ -11,6 +11,8 @@ choice
     default LED_BLINK_SLEEP_1S
     help
         Select the LED blink delay preset.
+config LED_BLINK_SLEEP_15MS
+    bool "15ms very fast"
 
 config LED_BLINK_SLEEP_250MS
     bool "250ms (fast)"
@@ -28,6 +30,7 @@ endchoice
 
 config LED_BLINK_SLEEP_TIME_MS
     int
+    default 15 if LED_BLINK_SLEEP_15MS
     default 250 if LED_BLINK_SLEEP_250MS
     default 500 if LED_BLINK_SLEEP_500MS
     default 1000 if LED_BLINK_SLEEP_1S
@@ -70,5 +73,12 @@ endmenu
 endif
 
 endif
+
+config APP_HEARTBEAT_PERIOD_MS
+    int "Heartbeat LED period in milliseconds"
+    default 500
+    range 100 2000
+    help
+      Controls the blink period of the heartbeat LED in milliseconds.
 
 source "Kconfig.zephyr"

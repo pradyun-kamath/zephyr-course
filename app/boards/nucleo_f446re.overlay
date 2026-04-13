@@ -1,0 +1,26 @@
+/*
+ * Board overlay for Nucleo F446RE — Lesson 4 Task 1
+ *
+ * The Nucleo F446RE has one built-in green LED (LD2) on PA5, already
+ * exposed by the board DTS as the `led0` alias.  For this exercise an
+ * external red LED is wired to the D12 header pin (PA6) to demonstrate
+ * configurable heartbeat blinking via Kconfig.  We leave the board's
+ * `led0` / green LED untouched and introduce a dedicated `app-led` alias
+ * that the application code resolves with DT_ALIAS(app_led).
+ */
+
+/ {
+	leds {
+		compatible = "gpio-leds";
+
+		/* External red LED connected to D12 (PA6) */
+		red_led: red_led_0 {
+			gpios = <&gpioa 6 GPIO_ACTIVE_HIGH>;
+			label = "External Red LED (D12 / PA6)";
+		};
+	};
+
+	aliases {
+		app-led = &red_led;
+	};
+};

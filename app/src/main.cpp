@@ -1,4 +1,5 @@
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/init.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
@@ -7,6 +8,17 @@ static const struct gpio_dt_spec led =
     GPIO_DT_SPEC_GET(DT_ALIAS(app_led), gpios);
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
+
+/* Runs at APPLICATION init level — after the console driver is up but
+ * before main() is invoked. This is the canonical Zephyr way to perform
+ * board-level bring-up announcements.
+ */
+static int board_announce(void)
+{
+    printk("Board Initialized\n");
+    return 0;
+}
+SYS_INIT(board_announce, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
 
 int main(void)
 {

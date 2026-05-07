@@ -1,0 +1,92 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * From-scratch board for STM32U575ZI on the Nucleo-U575ZI-Q.
+ * Minimal: HSI16 clock, USART1 console, one external red LED on PA5/D13.
+ *
+ * Memory layout (inherited from <st/u5/stm32u575Xi.dtsi>):
+ *   FLASH (flash0) : 0x08000000, 2 MB
+ *   SRAM  (sram0)  : 0x20000000, 768 KB (main SRAM region)
+ */
+
+/dts-v1/;
+#include <st/u5/stm32u575Xi.dtsi>
+#include <st/u5/stm32u575zitxq-pinctrl.dtsi>
+
+/ {
+	model = "My Custom Board (from scratch)";
+	compatible = "st,my-custom-board";
+
+	chosen {
+		zephyr,console = &usart1;
+		zephyr,shell-uart = &usart1;
+		zephyr,sram = &sram0;     /* main SRAM, 768 KB @ 0x20000000 */
+		zephyr,flash = &flash0;   /* internal flash, 2 MB @ 0x08000000 */
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		red_led_ext: red_led_0 {
+			gpios = <&gpioa 5 GPIO_ACTIVE_HIGH>;
+			label = "External Red LED (D13 / PA5)";
+		};
+	};
+
+	aliases {
+		led0    = &red_led_ext;
+		app-led = &red_led_ext;   /* matches DT_ALIAS(app_led) in main.cpp */
+	};
+};
+
+/* Make memory regions explicit (status=okay is the default in the SoC
+ * dtsi; we re-state here for clarity). The sizes come from the SoC
+ * include and must NOT be hand-edited — they are silicon facts.
+ */
+&sram0 {
+	status = "okay";
+};
+
+&flash0 {
+	status = "okay";
+
+	/* A single-image flash layout: the whole 2 MB belongs to the app.
+	 * Add MCUboot partitions here later if doing firmware updates.
+	 */
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		slot0_partition: partition@0 {
+			label = "image-0";
+			reg = <0x00000000 DT_SIZE_M(2)>;
+		};
+	};
+};
+
+/* System clock: HSI16 (16 MHz internal RC) — no PLL, no LSE.
+ * Trades performance for simplicity; UART at 115200 still works fine.
+ */
+&clk_hsi {
+	status = "okay";
+};
+
+&rcc {
+	clocks = <&clk_hsi>;
+	clock-frequency = <DT_FREQ_M(16)>;
+	ahb-prescaler = <1>;
+	apb1-prescaler = <1>;
+	apb2-prescaler = <1>;
+	apb3-prescaler = <1>;
+};
+
+/* Console UART — same physical pins as nucleo (PA9/PA10) so the
+ * Nucleo's on-board ST-LINK VCP forwards the bytes to USB.
+ */
+&usart1 {
+	pinctrl-0 = <&usart1_tx_pa9 &usart1_rx_pa10>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+	status = "okay";
+};

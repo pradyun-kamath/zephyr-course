@@ -1,0 +1,6 @@
+board:
+  name: my_board
+  full_name: My Custom Board (built from scratch)
+  vendor: st
+  socs:
+    - name: stm32u575xx

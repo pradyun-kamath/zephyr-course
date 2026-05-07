@@ -1,0 +1,14 @@
+identifier: my_board
+name: My Custom Board (from scratch)
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+supported:
+  - gpio
+  - serial
+  - uart
+ram: 768
+flash: 2048
+vendor: st

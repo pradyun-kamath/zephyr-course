@@ -1,0 +1,14 @@
+/*
+ * Board overlay for our_board
+ *
+ * Use the on-board green user LED (LD1, PC7) as the heartbeat LED.
+ * green_led_1 is already declared in our_board-common.dtsi; we just
+ * expose it under the application's `app-led` alias so main.cpp can
+ * resolve it via DT_ALIAS(app_led).
+ */
+
+/ {
+	aliases {
+		app-led = &green_led_1;
+	};
+};

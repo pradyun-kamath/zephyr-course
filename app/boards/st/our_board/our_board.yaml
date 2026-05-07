@@ -1,0 +1,27 @@
+identifier: our_board
+
+name: Our Custom Board
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+supported:
+  - arduino_gpio
+  - arduino_i2c
+  - arduino_serial
+  - arduino_spi
+  - can
+  - adc
+  - dac
+  - gpio
+  - i2c
+  - spi
+  - usart
+  - watchdog
+  - backup_sram
+  - dma
+  - rtc
+ram: 786
+flash: 2048
+vendor: st

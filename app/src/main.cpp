@@ -24,7 +24,7 @@ int main(void)
     }
 
     LOG_INF("Heartbeat LED on port %s pin %d — period %d ms",
-        led.port->name, led.pin, CONFIG_APP_HEARTBEAT_PERIOD_MS);
+        led.port->name, led.pin, CONFIG_LED_BLINK_SLEEP_TIME_MS);
 
     while (1) {
         ret = gpio_pin_toggle_dt(&led);
@@ -33,7 +33,7 @@ int main(void)
             return 0;
         }
 
-        k_msleep(CONFIG_APP_HEARTBEAT_PERIOD_MS);
+        k_msleep(CONFIG_LED_BLINK_SLEEP_TIME_MS);
     }
 
     return 0;
